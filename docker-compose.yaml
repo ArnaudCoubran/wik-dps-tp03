@@ -24,6 +24,10 @@ services:
     environment:
       - PORT=8080
     
+    # Nombre de réplicas souhaités du même container 
+    deploy:
+      replicas: 4 # Ici on déploie 4 fois le container au sein du service my_app
+    
     # Configure le reseau du service
     # Il est accessible seulement via le reseau nomme
     # front-network
