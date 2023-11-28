@@ -1,0 +1,64 @@
+# Version de l'API Docker Compose a utiliser pour lire ce fichier
+version: '3.8'
+
+# Declaration des services
+services:
+
+  # Un service nommee my_app
+  my_app:
+
+    # Definition du Dockerfile a build et a utiliser
+    build:
+      context: .
+      dockerfile: single-stage.dockerfile
+
+    # Configuration des ports a exposer sur le reseau
+    expose:
+      - '8080'
+
+    
+    # Redemarrage automatique dans tous les cas lorsqu'un container s'arrete
+    restart: always
+
+    # Definir des variables d'environnement pour le service
+    environment:
+      - PORT=8080
+    
+    # Configure le reseau du service
+    # Il est accessible seulement via le reseau nomme
+    # front-network
+    networks:
+      - front-network
+
+     # L'image Docker a utilisé pour le service
+    image: nginx:latest
+
+    # Monter un fichier du répertoire courant de l'hôte
+    # sur le service
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    
+    # Configurer le port-forwarding entre l'hete et le service
+    ports:
+      - 8081:80
+
+    # Definir une relation de dependance
+    # Si my_app n'est pas pret alors pas de proxy
+    depends_on: 
+      - my_app
+    
+    # Configure le reseau du service
+    # Il est accessible seulement via le reseau nomme
+    # front-network
+    networks:
+      - front-network
+
+# Declaration des reseaux
+networks:
+  # Un network nomme front-network qui utilise le driver bridge
+  front-network:
+    driver: bridge
+
+
+
+
